@@ -46,12 +46,14 @@ bool DoubleLinkedList::ConstIterator::IsVaild(const DoubleLinkedList* const list
 /**
 * @brief	リストの先頭に向かって一つ進める（前置デクリメント）
 * @detail	リストの参照がない場合失敗になる。
-*			直前ノードはダミーの場合失敗になる。
+*			リストが空である場合失敗になる。
+*			直前ノードは先頭ノードの場合失敗になる。
 */
 DoubleLinkedList::ConstIterator& DoubleLinkedList::ConstIterator::operator--()
 {
 	assert(m_pNode && m_pList && "--i参照がない");// リストの参照があるかの確認
-	assert(m_pNode->pPrev->isDummy == false && "--iダミーになった");// 直前ノードはダミーではないかの確認
+	assert(m_pList->Count() > 0 && "i--リストが空である");//リストが空ではないかの確認
+	assert(m_pNode->pPrev->isDummy == false && "--i先頭である");// 直前ノードは先頭ではないかの確認
 
 	m_pNode = m_pNode->pPrev;
 
@@ -61,12 +63,12 @@ DoubleLinkedList::ConstIterator& DoubleLinkedList::ConstIterator::operator--()
 /**
 * @brief	リストの末尾に向かって一つ進める（前置インクリメント）
 * @detail	リストの参照がない場合失敗になる。
-*			直後ノードはダミーの場合失敗になる。
+*			ノードはダミーの場合失敗になる。
 */
 DoubleLinkedList::ConstIterator& DoubleLinkedList::ConstIterator::operator++()
 {
 	assert(m_pNode && m_pList && "++i参照がない");// リストの参照があるかの確認
-	assert(m_pNode->pNext->isDummy == false && "++iダミーになった");// 直後ノードはダミーではないかの確認
+	assert(m_pNode->isDummy == false && "++iダミーである");// ノードはダミーではないかの確認
 
 	m_pNode = m_pNode->pNext;
 
@@ -76,12 +78,14 @@ DoubleLinkedList::ConstIterator& DoubleLinkedList::ConstIterator::operator++()
 /**
 * @brief	リストの末尾に向かって一つ進める（後置インクリメント）
 * @detail	リストの参照がない場合失敗になる。
-*			直後ノードはダミーの場合失敗になる。
+*			リストが空である場合失敗になる。
+*			ノードは先頭ノードの場合失敗になる。
 */
 DoubleLinkedList::ConstIterator DoubleLinkedList::ConstIterator::operator--(int i)
 {
 	assert(m_pNode && m_pList && "i--参照がない");// リストの参照があるかの確認
-	assert(m_pNode->pPrev->isDummy == false && "i--ダミーになった");// 直後ノードはダミーではないかの確認
+	assert(m_pList->Count() > 0 && "i--リストが空である");//リストが空ではないかの確認
+	assert(m_pNode->pPrev->isDummy==false && "i--先頭である");// 直後ノードは先頭ではないかの確認
 
 	m_pNode = m_pNode->pPrev;
 
@@ -96,7 +100,7 @@ DoubleLinkedList::ConstIterator DoubleLinkedList::ConstIterator::operator--(int 
 DoubleLinkedList::ConstIterator DoubleLinkedList::ConstIterator::operator++(int i)
 {
 	assert(m_pNode && m_pList && "i++参照がない");// リストの参照があるかの確認
-	assert(m_pNode->pNext->isDummy == false && "i++ダミーになった");// 直後ノードはダミーではないかの確認
+	assert(m_pNode->isDummy == false && "i++ダミーである");// 直後ノードはダミーではないかの確認
 
 	m_pNode = m_pNode->pNext;
 
