@@ -50,8 +50,8 @@ bool DoubleLinkedList::ConstIterator::IsVaild(const DoubleLinkedList* const list
 */
 DoubleLinkedList::ConstIterator& DoubleLinkedList::ConstIterator::operator--()
 {
-	assert(m_pNode && m_pList);// リストの参照があるかの確認
-	assert(m_pNode->pPrev->isDummy == false);// 直前ノードはダミーではないかの確認
+	assert(m_pNode && m_pList && "--i参照がない");// リストの参照があるかの確認
+	assert(m_pNode->pPrev->isDummy == false && "--iダミーになった");// 直前ノードはダミーではないかの確認
 
 	m_pNode = m_pNode->pPrev;
 
@@ -65,8 +65,8 @@ DoubleLinkedList::ConstIterator& DoubleLinkedList::ConstIterator::operator--()
 */
 DoubleLinkedList::ConstIterator& DoubleLinkedList::ConstIterator::operator++()
 {
-	assert(m_pNode && m_pList);// リストの参照があるかの確認
-	assert(m_pNode->pNext->isDummy == false);// 直後ノードはダミーではないかの確認
+	assert(m_pNode && m_pList && "++i参照がない");// リストの参照があるかの確認
+	assert(m_pNode->pNext->isDummy == false && "++iダミーになった");// 直後ノードはダミーではないかの確認
 
 	m_pNode = m_pNode->pNext;
 
@@ -80,8 +80,8 @@ DoubleLinkedList::ConstIterator& DoubleLinkedList::ConstIterator::operator++()
 */
 DoubleLinkedList::ConstIterator DoubleLinkedList::ConstIterator::operator--(int i)
 {
-	assert(m_pNode && m_pList);// リストの参照があるかの確認
-	assert(m_pNode->pPrev->isDummy == false);// 直後ノードはダミーではないかの確認
+	assert(m_pNode && m_pList && "i--参照がない");// リストの参照があるかの確認
+	assert(m_pNode->pPrev->isDummy == false && "i--ダミーになった");// 直後ノードはダミーではないかの確認
 
 	m_pNode = m_pNode->pPrev;
 
@@ -95,8 +95,8 @@ DoubleLinkedList::ConstIterator DoubleLinkedList::ConstIterator::operator--(int 
 */
 DoubleLinkedList::ConstIterator DoubleLinkedList::ConstIterator::operator++(int i)
 {
-	assert(m_pNode && m_pList);// リストの参照があるかの確認
-	assert(m_pNode->pNext->isDummy == false);// 直後ノードはダミーではないかの確認
+	assert(m_pNode && m_pList && "i++参照がない");// リストの参照があるかの確認
+	assert(m_pNode->pNext->isDummy == false && "i++ダミーになった");// 直後ノードはダミーではないかの確認
 
 	m_pNode = m_pNode->pNext;
 
@@ -111,20 +111,18 @@ DoubleLinkedList::ConstIterator DoubleLinkedList::ConstIterator::operator++(int 
 */
 DoubleLinkedList::Node& DoubleLinkedList::ConstIterator::operator*() const
 {
-	assert(m_pNode && m_pList);// リストの参照があるかの確認
-	assert(m_pNode->isDummy == false);
+	assert(m_pNode && m_pList && "constIteratorリストの参照がない");// リストの参照があるかの確認
+	assert(m_pNode->isDummy == false && "constIteratorがダミーである");
 
 	return (*m_pNode);
 }
 
 /**
 * @brief	指す要素へのポインタを取得する(const版)
-* @detail	リストの参照がない場合失敗になる。
+* @detail	(*Iterator)の場合、ダミーの方がassertを起こすため、ポインタを用意する。
 */
 DoubleLinkedList::Node* DoubleLinkedList::ConstIterator::operator&() const
 {
-	assert(m_pNode && m_pList);// リストの参照があるかの確認
-
 	return m_pNode;
 }
 
@@ -173,20 +171,18 @@ bool DoubleLinkedList::ConstIterator::operator!=(const ConstIterator& iter)
 */
 DoubleLinkedList::Node& DoubleLinkedList::Iterator::operator*()
 {
-	assert(m_pNode && m_pList);// リストの参照があるかの確認
-	assert(m_pNode->isDummy == false);
+	assert(m_pNode && m_pList && "iteratorリストの参照がない");// リストの参照があるかの確認
+	assert(m_pNode->isDummy == false && "iteratorがダミーである");
 
 	return *m_pNode;
 }
 
 /**
 * @brief	指す要素へのポインタを取得する(非const版)
-* @detail	リストの参照がない場合失敗になる。
+* @detail	(*Iterator)の場合、ダミーの方がassertを起こすため、ポインタを用意する。
 */
 DoubleLinkedList::Node* DoubleLinkedList::Iterator::operator&()
 {
-	assert(m_pNode && m_pList);// リストの参照があるかの確認
-
 	return m_pNode;
 }
 
@@ -266,7 +262,7 @@ bool DoubleLinkedList::Insert(ConstIterator& positionIter, Node* newNode)
 		return false;
 
 	//挿入を行う
-	Node* prev = (*positionIter).pPrev;
+	Node* prev = (&positionIter)->pPrev;//(*positionIter)の場合、ダミーの方がassertを起こす
 	Node* next = &positionIter;
 
 	prev->pNext = newNode;
@@ -296,12 +292,12 @@ bool DoubleLinkedList::Remove(ConstIterator& positionIter)
 		return false;
 
 	//ダミーノードを指す場合、削除失敗
-	if ((*positionIter).isDummy==true)
+	if ((&positionIter)->isDummy==true)//(*positionIter)の場合、ダミーの方がassertを起こす
 		return false;
 
 	//削除を行う
-	Node* prev = (*positionIter).pPrev;
-	Node* next = (*positionIter).pNext;
+	Node* prev = (&positionIter)->pPrev;//(*positionIter)の場合、ダミーの方がassertを起こす
+	Node* next = (&positionIter)->pNext;//(*positionIter)の場合、ダミーの方がassertを起こす
 
 	prev->pNext = next;
 	next->pPrev = prev;

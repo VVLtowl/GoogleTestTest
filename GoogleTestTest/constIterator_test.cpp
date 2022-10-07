@@ -22,7 +22,6 @@ namespace iterator_test
 		{
 			DoubleLinkedList::Node node;
 			DoubleLinkedList::Iterator iter(&node, nullptr);
-			EXPECT_DEATH((&iter), "");
 			EXPECT_DEATH((*iter), "");
 		}
 

@@ -701,7 +701,7 @@ namespace doubleLinkedList_test
 			list.PushBack(&node);
 
 			EXPECT_EQ(1, list.Count());
-			EXPECT_TRUE((*list.End()).isDummy);
+			EXPECT_TRUE((&list.End())->isDummy);
 		}
 
 		/**
@@ -718,7 +718,7 @@ namespace doubleLinkedList_test
 			list.PushBack(&node2);
 
 			EXPECT_LE(2, list.Count());
-			EXPECT_TRUE((*list.End()).isDummy);
+			EXPECT_TRUE((&list.End())->isDummy);
 		}
 
 		/**
@@ -739,19 +739,19 @@ namespace doubleLinkedList_test
 			DoubleLinkedList::Iterator head = list.Begin();
 			DoubleLinkedList::Node newNode1;
 			EXPECT_TRUE(list.Insert(head, &newNode1));
-			EXPECT_TRUE((*list.End()).isDummy);
+			EXPECT_TRUE((&list.End())->isDummy);
 
 			/**’†‰›‚É‘}“ü*/
 			DoubleLinkedList::Iterator middle(&node2, &list);
 			DoubleLinkedList::Node newNode2;
 			EXPECT_TRUE(list.Insert(middle, &newNode2));
-			EXPECT_TRUE((*list.End()).isDummy);
+			EXPECT_TRUE((&list.End())->isDummy);
 
 			/**––”ö‚É‘}“ü*/
 			DoubleLinkedList::Iterator tail = list.End();
 			DoubleLinkedList::Node newNode3;
 			EXPECT_TRUE(list.Insert(tail, &newNode3));
-			EXPECT_TRUE((*list.End()).isDummy);
+			EXPECT_TRUE((&list.End())->isDummy);
 		}
 
 		/**
@@ -775,19 +775,19 @@ namespace doubleLinkedList_test
 			--last;/**––”öƒm[ƒh*/
 			DoubleLinkedList::Node newNode3;
 			EXPECT_TRUE(list.Remove(last));
-			EXPECT_TRUE((*list.End()).isDummy);
+			EXPECT_TRUE((&list.End())->isDummy);
 
 			/**’†‰›‚ðíœ*/
 			DoubleLinkedList::Iterator middle(&node3, &list);
 			DoubleLinkedList::Node newNode2;
 			EXPECT_TRUE(list.Remove(middle));
-			EXPECT_TRUE((*list.End()).isDummy);
+			EXPECT_TRUE((&list.End())->isDummy);
 
 			/**æ“ª‚ðíœ*/
 			DoubleLinkedList::Iterator head = list.Begin();
 			DoubleLinkedList::Node newNode1;
 			EXPECT_TRUE(list.Remove(head));
-			EXPECT_TRUE((*list.End()).isDummy);
+			EXPECT_TRUE((&list.End())->isDummy);
 		}
 
 		///**
@@ -835,7 +835,7 @@ namespace doubleLinkedList_test
 			list.PushBack(&node);
 
 			EXPECT_EQ(1, list.Count());
-			EXPECT_TRUE((*list.CEnd()).isDummy);
+			EXPECT_TRUE((&list.CEnd())->isDummy);
 		}
 
 		/**
@@ -852,7 +852,7 @@ namespace doubleLinkedList_test
 			list.PushBack(&node2);
 
 			EXPECT_LE(2, list.Count());
-			EXPECT_TRUE((*list.CEnd()).isDummy);
+			EXPECT_TRUE((&list.CEnd())->isDummy);
 		}
 
 		/**
@@ -873,19 +873,19 @@ namespace doubleLinkedList_test
 			DoubleLinkedList::Iterator head = list.Begin();
 			DoubleLinkedList::Node newNode1;
 			EXPECT_TRUE(list.Insert(head, &newNode1));
-			EXPECT_TRUE((*list.CEnd()).isDummy);
+			EXPECT_TRUE((&list.CEnd())->isDummy);
 
 			/**’†‰›‚É‘}“ü*/
 			DoubleLinkedList::Iterator middle(&node2, &list);
 			DoubleLinkedList::Node newNode2;
 			EXPECT_TRUE(list.Insert(middle, &newNode2));
-			EXPECT_TRUE((*list.CEnd()).isDummy);
+			EXPECT_TRUE((&list.CEnd())->isDummy);
 
 			/**––”ö‚É‘}“ü*/
 			DoubleLinkedList::Iterator tail = list.End();
 			DoubleLinkedList::Node newNode3;
 			EXPECT_TRUE(list.Insert(tail, &newNode3));
-			EXPECT_TRUE((*list.CEnd()).isDummy);
+			EXPECT_TRUE((&list.CEnd())->isDummy);
 		}
 
 		/**
@@ -909,19 +909,19 @@ namespace doubleLinkedList_test
 			--last;/**––”öƒm[ƒh*/
 			DoubleLinkedList::Node newNode3;
 			EXPECT_TRUE(list.Remove(last));
-			EXPECT_TRUE((*list.CEnd()).isDummy);
+			EXPECT_TRUE((&list.CEnd())->isDummy);
 
 			/**’†‰›‚ðíœ*/
 			DoubleLinkedList::Iterator middle(&node3, &list);
 			DoubleLinkedList::Node newNode2;
 			EXPECT_TRUE(list.Remove(middle));
-			EXPECT_TRUE((*list.CEnd()).isDummy);
+			EXPECT_TRUE((&list.CEnd())->isDummy);
 
 			/**æ“ª‚ðíœ*/
 			DoubleLinkedList::Iterator head = list.Begin();
 			DoubleLinkedList::Node newNode1;
 			list.Remove(head);
-			EXPECT_TRUE((*list.CEnd()).isDummy);
+			EXPECT_TRUE((&list.CEnd())->isDummy);
 
 		}
 
