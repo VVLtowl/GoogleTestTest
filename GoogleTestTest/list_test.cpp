@@ -938,7 +938,7 @@ namespace doubleLinkedList_test
 		//	list.PushBack(&node);
 		//	const DoubleLinkedList constList = list;
 
-		//	//constList.CEnd();/**コンパイルエラーにならない*/
+		//	constList.CEnd();/**コンパイルエラーにならない*/
 		//}
 	}
 #endif

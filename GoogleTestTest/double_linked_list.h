@@ -34,8 +34,8 @@ public:
 		ConstIterator& operator++();								//リストの末尾に向かって一つ進める
 		ConstIterator operator--(int i);								//リストの先頭に向かって一つ進める
 		ConstIterator operator++(int i);								//リストの末尾に向かって一つ進める
-		Node& operator*()const;										//イテレータの指す要素を取得する(const版)
-		Node* operator&()const;										//指す要素へのポインタを取得する(const版)
+		const Node& operator*()const;										//イテレータの指す要素を取得する(const版)
+		const Node* operator&()const;										//指す要素へのポインタを取得する(const版)
 		ConstIterator(const ConstIterator& constIter);				//コピーを行う（コピーコンストラクタ）
 		ConstIterator& operator=(const ConstIterator& constIter);	//代入を行う
 		bool operator==(const ConstIterator& constIter);			//同一か比較する

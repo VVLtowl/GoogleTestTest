@@ -109,7 +109,7 @@ DoubleLinkedList::ConstIterator DoubleLinkedList::ConstIterator::operator++(int 
 * @detail	リストの参照がない場合失敗になる。
 * 			ノードはダミーの場合失敗になる。
 */
-DoubleLinkedList::Node& DoubleLinkedList::ConstIterator::operator*() const
+const DoubleLinkedList::Node& DoubleLinkedList::ConstIterator::operator*() const
 {
 	assert(m_pNode && m_pList && "constIteratorリストの参照がない");// リストの参照があるかの確認
 	assert(m_pNode->isDummy == false && "constIteratorがダミーである");
@@ -121,7 +121,7 @@ DoubleLinkedList::Node& DoubleLinkedList::ConstIterator::operator*() const
 * @brief	指す要素へのポインタを取得する(const版)
 * @detail	(*Iterator)の場合、ダミーの方がassertを起こすため、ポインタを用意する。
 */
-DoubleLinkedList::Node* DoubleLinkedList::ConstIterator::operator&() const
+const DoubleLinkedList::Node* DoubleLinkedList::ConstIterator::operator&() const
 {
 	return m_pNode;
 }
@@ -197,7 +197,8 @@ DoubleLinkedList::Node* DoubleLinkedList::Iterator::operator&()
 */
 bool DoubleLinkedList::PushBack(DoubleLinkedList::Node* newNode)
 {
-	return Insert(CEnd(), newNode);
+	ConstIterator iter = CEnd();
+	return Insert(iter, newNode);
 }
 bool DoubleLinkedList::PushBack(int score, const char* name)
 {
@@ -263,7 +264,7 @@ bool DoubleLinkedList::Insert(ConstIterator& positionIter, Node* newNode)
 
 	//挿入を行う
 	Node* prev = (&positionIter)->pPrev;//(*positionIter)の場合、ダミーの方がassertを起こす
-	Node* next = &positionIter;
+	Node* next = prev->pNext;
 
 	prev->pNext = newNode;
 	newNode->pPrev = prev;
