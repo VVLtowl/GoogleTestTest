@@ -2,7 +2,7 @@
 #include "double_linked_list.h"
 
 /**双方向リストの単体テスト*/
-//#define GT_TEST_DOUBLE_LINKED_LIST
+#define GT_TEST_DOUBLE_LINKED_LIST
 
 //=================================== 双方向リスト単体テストの自動テスト ===================================
 namespace doubleLinkedList_test
