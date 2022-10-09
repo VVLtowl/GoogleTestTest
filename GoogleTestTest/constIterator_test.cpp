@@ -1,14 +1,15 @@
 #include "pch.h"
 #include "double_linked_list.h"
 
-/**イテレータの単体テスト*/
+//イテレータの単体テスト
 #define GT_TEST_ITERATOR
 
-//=================================== イテレータ単体テストの自動テスト ===================================
-namespace iterator_test
-{
+
 #if defined GT_TEST_ITERATOR
-	//=================================== イテレータの指す要素を取得するテスト ===================================
+//========== イテレータ単体テストのテスト ==========
+namespace iterator_auto_test
+{
+	//========== イテレータの指す要素を取得するテスト ==========
 	namespace iterator_getNode_test
 	{
 		/**
@@ -20,7 +21,7 @@ namespace iterator_test
 		TEST(IteratorGetNodeTest, WhenNoReference)
 		{
 			DoubleLinkedList::Node node;
-			DoubleLinkedList::Iterator iter(&node, nullptr);
+			DoubleLinkedList::Iterator iter(&node, nullptr);//リストの参照がないイテレータを作成
 			EXPECT_DEATH((*iter), "");
 		}
 
@@ -34,17 +35,22 @@ namespace iterator_test
 		{
 			DoubleLinkedList list;
 			DoubleLinkedList::Node node;
+			list.PushBack(&node);
+
+			//初期値を取得
 			int initScore = node.scoreData.score;
 			char initName[WORD_SIZE];
 			strcpy(initName, node.scoreData.name);
-			list.PushBack(&node);
-			//変更前は初期化の値と同じ
+
+			//変更前は初期値と同じ
 			EXPECT_EQ(initScore, node.scoreData.score);
 			EXPECT_EQ(0, strcmp(initName, node.scoreData.name));
 
+			//Iteratorから取得した要素に対して、値を代入
 			DoubleLinkedList::Iterator iter = list.Begin();
 			(*iter).scoreData.score = 10;
 			strcpy((*iter).scoreData.name, "Test1-1");
+
 			//変更後は初期値と異なる
 			EXPECT_NE(initScore, node.scoreData.score);
 			EXPECT_NE(0, strcmp(initName, node.scoreData.name));
@@ -55,16 +61,20 @@ namespace iterator_test
 		* @detail		ID:1-2
 		*				ConstIteratorから取得した要素に対して、
 		*				値の代入が行えないかをチェックします。
-		*				コンパイルエラーになることをチェックします。
+		*				コンパイルエラーになることをチェックします。(手動テスト)
 		*/
 		//TEST(IteratorGetNodeTest, WhenEmptyList_GetFromBegin)
 		//{
 		//	DoubleLinkedList list;
 		//	DoubleLinkedList::Node node;
 		//	list.PushBack(&node);
-		//	DoubleLinkedList::ConstIterator constIter = list.Begin();
+		//
+		//	//Iteratorから取得した要素に値を代入
 		//	DoubleLinkedList::Iterator iter = list.Begin();
 		//	(*iter).scoreData.score = 10;
+		//
+		//	//ConstIteratorから取得した要素に値を代入
+		//	DoubleLinkedList::ConstIterator constIter = list.Begin();
 		//	(*constIter).scoreData.score = 10;
 		//}
 
@@ -78,7 +88,7 @@ namespace iterator_test
 		{
 			DoubleLinkedList list;
 			DoubleLinkedList::Iterator iter = list.Begin();
-			EXPECT_EQ(0, list.Count());
+			EXPECT_EQ(0, list.Count());//リストが空であるかをチェック
 			EXPECT_DEATH((*iter), "");
 		}
 
@@ -95,7 +105,7 @@ namespace iterator_test
 			EXPECT_DEATH((*iter), "");
 		}
 	}
-	//=================================== イテレータをリストの末尾に向かって一つ進めるテスト ===================================
+	//========== イテレータをリストの末尾に向かって一つ進めるテスト ==========
 	namespace iterator__increment_test
 	{
 		/**
@@ -119,7 +129,7 @@ namespace iterator_test
 		*/
 		TEST(IteratorIncrementTest, WhenEmptyList_IncrementBegin)
 		{
-			DoubleLinkedList list;
+			DoubleLinkedList list;//空リストを作成
 			DoubleLinkedList::Iterator iter = list.Begin();
 			EXPECT_DEATH((++iter), "");
 		}
@@ -145,6 +155,7 @@ namespace iterator_test
 		*/
 		TEST(IteratorIncrementTest, WhenManyElements)
 		{
+			//二つ以上の要素があるリストを作成
 			DoubleLinkedList list;
 			DoubleLinkedList::Node node1, node2, node3;
 			list.PushBack(&node1);
@@ -158,6 +169,10 @@ namespace iterator_test
 			DoubleLinkedList::Iterator iter = list.Begin();
 			while (iter != list.CEnd())
 			{
+				/**
+				* 次の要素へのポインタを先に取得、
+				* イテレータが末尾を向って一つ進めた後指した要素と比較する
+				*/
 				DoubleLinkedList::Node* next = (&iter)->pNext;
 				++iter;
 				EXPECT_EQ(next, &iter);
@@ -172,15 +187,21 @@ namespace iterator_test
 		*/
 		TEST(IteratorIncrementTest, PreIncrement)
 		{
+			//二つ以上の要素があるリストを作成
 			DoubleLinkedList list;
 			DoubleLinkedList::Node node1, node2;
 			list.PushBack(&node1);
 			list.PushBack(&node2);
 
 			DoubleLinkedList::Iterator iter = list.Begin();
-			DoubleLinkedList::Node* current = &iter;
+
+			/**
+			* 次の要素へのポインタを先に取得、
+			* イテレータが末尾を向って一つ進めた後指した要素と比較する
+			*/
+			DoubleLinkedList::Node* next = (&iter)->pNext;
 			++iter;
-			EXPECT_TRUE(current->pNext == &iter);
+			EXPECT_EQ(next, &iter);
 		}
 
 		/**
@@ -191,18 +212,24 @@ namespace iterator_test
 		*/
 		TEST(IteratorIncrementTest, PostIncrement)
 		{
+			//二つ以上の要素があるリストを作成
 			DoubleLinkedList list;
 			DoubleLinkedList::Node node1, node2;
 			list.PushBack(&node1);
 			list.PushBack(&node2);
 
 			DoubleLinkedList::Iterator iter = list.Begin();
-			DoubleLinkedList::Node* current = &iter;
-			iter++;
-			EXPECT_TRUE(current->pNext == &iter);
+
+			/**
+			* 次の要素へのポインタを先に取得、
+			* イテレータが末尾を向って一つ進めた後指した要素と比較する
+			*/
+			DoubleLinkedList::Node* next = (&iter)->pNext;
+			++iter;
+			EXPECT_EQ(next, &iter);
 		}
 	}
-	//=================================== イテレータをリストの先頭に向かって一つ進めるテスト ===================================
+	//========== イテレータをリストの先頭に向かって一つ進めるテスト ==========
 	namespace iterator_decrement_test
 	{
 		/**
@@ -224,9 +251,9 @@ namespace iterator_test
 		* 				リストが空の際の、末尾イテレータに対して呼び出した際に、
 		*				assert発生するかを確認します。
 		*/
-		TEST(IteratorDecrementTest, WhenEmptyList_DecrementBegin)
+		TEST(IteratorDecrementTest, WhenEmptyList_DecrementEnd)
 		{
-			DoubleLinkedList list;
+			DoubleLinkedList list;//空であるリストを作成
 			DoubleLinkedList::Iterator iter = list.End();
 			EXPECT_DEATH((--iter), "");
 		}
@@ -237,9 +264,14 @@ namespace iterator_test
 		* 				先頭イテレータに対して呼び出した際に、
 		*				assert発生するかを確認します。
 		*/
-		TEST(IteratorDecrementTest, DecrementEnd)
+		TEST(IteratorDecrementTest, DecrementBegin)
 		{
+			//要素のあるリストを作成
 			DoubleLinkedList list;
+			DoubleLinkedList::Node node;
+			list.PushBack(&node);
+
+			//ダミーではない先頭イテレータを取得
 			DoubleLinkedList::Iterator iter = list.Begin();
 			EXPECT_DEATH((--iter), "");
 		}
@@ -252,6 +284,7 @@ namespace iterator_test
 		*/
 		TEST(IteratorDecrementTest, WhenManyElements)
 		{
+			//二つ以上の要素があるリストを作成
 			DoubleLinkedList list;
 			DoubleLinkedList::Node node1, node2, node3;
 			list.PushBack(&node1);
@@ -265,17 +298,18 @@ namespace iterator_test
 			DoubleLinkedList::Iterator iter = list.End();
 			while (1)
 			{
+				/**
+				* 前の要素へのポインタを先に取得、
+				* イテレータが先頭を向って一つ進めた後指した要素と比較する
+				*/
 				DoubleLinkedList::Node* prev = (&iter)->pPrev;
 				--iter;
 				EXPECT_EQ(prev, &iter);
 
+				//指した要素が先頭である場合、すべて確認完了
 				if (iter == list.Begin())
 				{
 					break;
-				}
-				else
-				{
-					--iter;
 				}
 			}
 		}
@@ -288,15 +322,21 @@ namespace iterator_test
 		*/
 		TEST(IteratorDecrementTest, PreDecrement)
 		{
+			//二つ以上の要素があるリストを作成
 			DoubleLinkedList list;
 			DoubleLinkedList::Node node1, node2;
 			list.PushBack(&node1);
 			list.PushBack(&node2);
 
 			DoubleLinkedList::Iterator iter = list.End();
-			DoubleLinkedList::Node* current = &iter;
+
+			/**
+			* 前の要素へのポインタを先に取得、
+			* イテレータが先頭を向って一つ進めた後指した要素と比較する
+			*/
+			DoubleLinkedList::Node* prev = (&iter)->pPrev;
 			--iter;
-			EXPECT_TRUE(current->pPrev == &iter);
+			EXPECT_EQ(prev, &iter);
 		}
 
 		/**
@@ -307,36 +347,223 @@ namespace iterator_test
 		*/
 		TEST(IteratorDecrementTest, PostDecrement)
 		{
+			//二つ以上の要素があるリストを作成
 			DoubleLinkedList list;
 			DoubleLinkedList::Node node1, node2;
 			list.PushBack(&node1);
 			list.PushBack(&node2);
 
 			DoubleLinkedList::Iterator iter = list.End();
-			DoubleLinkedList::Node* current = &iter;
+
+			/**
+			* 前の要素へのポインタを先に取得、
+			* イテレータが先頭を向って一つ進めた後指した要素と比較する
+			*/
+			DoubleLinkedList::Node* prev = (&iter)->pPrev;
 			iter--;
-			EXPECT_TRUE(current->pPrev == &iter);
+			EXPECT_EQ(prev, &iter);
 		}
 	}
-	//=================================== イテレータのコピーを行うテスト ===================================
+	//========== イテレータのコピーを行うテスト ==========
 	namespace iterator_copy_test
 	{
+		/**
+		* @brief		ConstIteratorから、Iteratorのコピーが作成されないかをチェック
+		* @detail		ID:1-17
+		* 				ConstIteratorから、Iteratorのコピーが作成されないかをチェックします。
+		*				コンパイルエラーになることを確認します。(手動テスト)
+		*/
+		//TEST(IteratorCopyTest, ConstIteratorCopyIterator)
+		//{
+		//	DoubleLinkedList::Iterator iter();
+		//	DoubleLinkedList::ConstIterator constIter = iter;//ConstIteratorから、Iteratorのコピーを作成
+		//}
 
+		/**
+		* @brief		コピーコンストラクト後の値がコピー元と等しいことをチェック
+		* @detail		ID:1-18
+		* 				コピーコンストラクト後の値がコピー元と等しいことをチェックします。
+		*/
+		TEST(IteratorCopyTest, AfterCopy_CheckDataEqual)
+		{
+			DoubleLinkedList list;
+			DoubleLinkedList::Node node(15,"Test1-18");	//初期値ではない要素を作成
+			list.PushBack(&node);
+			DoubleLinkedList::Iterator iter1(&node, &list);//コピー元を作成
+
+			//コピーコンストラクトから、イテレータを作成
+			DoubleLinkedList::Iterator iter2(iter1);
+
+			//コピーとコピー元の値を比較
+			EXPECT_EQ(
+				(*iter1).scoreData.score,
+				(*iter2).scoreData.score);
+			int cmp = strcmp(
+				(*iter1).scoreData.name,
+				(*iter2).scoreData.name);
+			EXPECT_EQ(0, cmp);
+		}
 	}
-	//=================================== イテレータの代入を行うテスト ===================================
+	//========== イテレータの代入を行うテスト ==========
 	namespace iterator_assign_test
 	{
+		/**
+		* @brief		IteratorにConstIteratorを代入できない事をチェック
+		* @detail		ID:1-19
+		* 				IteratorにConstIteratorを代入できない事をチェックします。
+		*				コンパイルエラーになることを確認します。(手動テスト)
+		*/
+		//TEST(IteratorAssignTest, AssginConstIteratorToIterator)
+		//{
+		//	DoubleLinkedList::ConstIterator constIter;
+		//	DoubleLinkedList::Iterator iter;
+		//	constIter = iter;
+		//	iter = constIter;
+		//}
 
+		/**
+		* @brief		代入後の値がコピー元と等しいことをチェック
+		* @detail		ID:1-20
+		* 				代入後の値がコピー元と等しいことをチェックします。
+		*/
+		TEST(IteratorAssignTest, AfterAssign_CheckDataEqual)
+		{
+			DoubleLinkedList list;
+			DoubleLinkedList::Node node(15, "Test1-20");//初期値ではない要素を作成
+			list.PushBack(&node);
+			DoubleLinkedList::Iterator iter1(&node, &list);//コピー元を作成
+
+			//代入で、イテレータをコピー
+			DoubleLinkedList::Iterator iter2;
+			iter2 = iter1;
+
+			//コピーとコピー元の値を比較
+			EXPECT_EQ(
+				(*iter1).scoreData.score,
+				(*iter2).scoreData.score);
+			int cmp = strcmp(
+				(*iter1).scoreData.name,
+				(*iter2).scoreData.name);
+			EXPECT_EQ(0, cmp);
+		}
 	}
-	//=================================== 二つのイテレータが同一のものであるか、比較を行うテスト ===================================
+	//========== 二つのイテレータが同一のものであるか、比較を行うテスト ==========
 	namespace iterator_equal_test
 	{
+		/**
+		* @brief		リストが空の状態での先頭イテレータと末尾イテレータを比較した際の挙動をチェック
+		* @detail		ID:1-21
+		* 				リストが空の状態での先頭イテレータと末尾イテレータを比較した際に、
+		*				trueが返る場合成功です。
+		*/
+		TEST(IteratorEqualTest, WhenEmptyList_CheckBeginAndEnd)
+		{
+			DoubleLinkedList list;
 
+			//リストが空の状態で、先頭も末尾もダミーである
+			DoubleLinkedList::Iterator begin = list.Begin();
+			DoubleLinkedList::Iterator end = list.End();
+
+			EXPECT_TRUE(begin == end);
+		}
+
+		/**
+		* @brief		同一のイテレータを比較した際の挙動
+		* @detail		ID:1-22
+		* 				同一のイテレータを比較した際に、
+		*				trueが返る場合成功です。
+		*/
+		TEST(IteratorEqualTest, WhenEmptyList_CheckSame)
+		{
+			DoubleLinkedList list;
+			DoubleLinkedList::Node node;
+			list.PushBack(&node);
+
+			//同じ要素を指す二つのイテレータを作成
+			DoubleLinkedList::Iterator iter1(&node, &list);
+			DoubleLinkedList::Iterator iter2(&node, &list);
+
+			EXPECT_TRUE(iter1 == iter2);
+		}
+
+		/**
+		* @brief		異なるイテレータを比較した際の挙動
+		* @detail		ID:1-23
+		* 				異なるイテレータを比較した際に、
+		*				falseが返る場合成功です。
+		*/
+		TEST(IteratorEqualTest, WhenEmptyList_CheckDifferent)
+		{
+			DoubleLinkedList list;
+			DoubleLinkedList::Node node1,node2;
+			list.PushBack(&node1);
+			list.PushBack(&node2);
+
+			//異なる要素を指す二つのイテレータを作成
+			DoubleLinkedList::Iterator iter1(&node1, &list);
+			DoubleLinkedList::Iterator iter2(&node2, &list);
+
+			EXPECT_FALSE(iter1 == iter2);
+		}
 	}
-	//=================================== 二つのイテレータが異なるものであるか、比較を行うテスト ===================================
+	//========== 二つのイテレータが異なるものであるか、比較を行うテスト ==========
 	namespace iterator_notEqual_test
 	{
+		/**
+		* @brief		リストが空の状態での先頭イテレータと末尾イテレータを比較した際の挙動をチェック
+		* @detail		ID:1-24
+		* 				リストが空の状態での先頭イテレータと末尾イテレータを比較した際に、
+		*				trueが返る場合成功です。
+		*/
+		TEST(IteratorNotEqualTest, WhenEmptyList_CheckBeginAndEnd)
+		{
+			DoubleLinkedList list;
 
+			//リストが空の状態で、先頭も末尾もダミーである
+			DoubleLinkedList::Iterator begin = list.Begin();
+			DoubleLinkedList::Iterator end = list.End();
+
+			EXPECT_FALSE(begin != end);
+		}
+
+		/**
+		* @brief		同一のイテレータを比較した際の挙動
+		* @detail		ID:1-25
+		* 				同一のイテレータを比較した際に、
+		*				trueが返る場合成功です。
+		*/
+		TEST(IteratorNotEqualTest, WhenEmptyList_CheckSame)
+		{
+			DoubleLinkedList list;
+			DoubleLinkedList::Node node;
+			list.PushBack(&node);
+
+			//同じ要素を指す二つのイテレータを作成
+			DoubleLinkedList::Iterator iter1(&node, &list);
+			DoubleLinkedList::Iterator iter2(&node, &list);
+
+			EXPECT_FALSE(iter1 != iter2);
+		}
+
+		/**
+		* @brief		異なるイテレータを比較した際の挙動
+		* @detail		ID:1-26
+		* 				異なるイテレータを比較した際に、
+		*				falseが返る場合成功です。
+		*/
+		TEST(IteratorNotEqualTest, WhenEmptyList_CheckDifferent)
+		{
+			DoubleLinkedList list;
+			DoubleLinkedList::Node node1, node2;
+			list.PushBack(&node1);
+			list.PushBack(&node2);
+
+			//異なる要素を指す二つのイテレータを作成
+			DoubleLinkedList::Iterator iter1(&node1, &list);
+			DoubleLinkedList::Iterator iter2(&node2, &list);
+
+			EXPECT_TRUE(iter1 != iter2);
+		}
 	}
-#endif
 }
+#endif
