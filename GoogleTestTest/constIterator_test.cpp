@@ -87,8 +87,8 @@ namespace iterator_auto_test
 		TEST(IteratorGetNodeTest, WhenEmptyList_GetFromBegin)
 		{
 			DoubleLinkedList list;
-			DoubleLinkedList::Iterator iter = list.Begin();
 			EXPECT_EQ(0, list.Count());//リストが空であるかをチェック
+			DoubleLinkedList::Iterator iter = list.Begin();
 			EXPECT_DEATH((*iter), "");
 		}
 
@@ -167,15 +167,16 @@ namespace iterator_auto_test
 			* 期待されている要素が格納されているかを確認
 			*/
 			DoubleLinkedList::Iterator iter = list.Begin();
-			while (iter != list.CEnd())
+			while (1)
 			{
 				/**
 				* 次の要素へのポインタを先に取得、
 				* イテレータが末尾を向って一つ進めた後指した要素と比較する
 				*/
-				DoubleLinkedList::Node* next = (&iter)->pNext;
+				DoubleLinkedList::Node* next = (&(*iter))->pNext;
 				++iter;
-				EXPECT_EQ(next, &iter);
+				if (iter == list.CEnd())break;
+				else EXPECT_EQ(next, &(*iter));
 			}
 		}
 
@@ -196,12 +197,12 @@ namespace iterator_auto_test
 			DoubleLinkedList::Iterator iter = list.Begin();
 
 			/**
-			* 次の要素へのポインタを先に取得、
+			* 次の要素へのポインタを先に取得し、
 			* イテレータが末尾を向って一つ進めた後指した要素と比較する
 			*/
-			DoubleLinkedList::Node* next = (&iter)->pNext;
+			DoubleLinkedList::Node* next = (&(*iter))->pNext;
 			++iter;
-			EXPECT_EQ(next, &iter);
+			EXPECT_EQ(next, (&(*iter)));
 		}
 
 		/**
@@ -224,9 +225,9 @@ namespace iterator_auto_test
 			* 次の要素へのポインタを先に取得、
 			* イテレータが末尾を向って一つ進めた後指した要素と比較する
 			*/
-			DoubleLinkedList::Node* next = (&iter)->pNext;
+			DoubleLinkedList::Node* next = (&(*iter))->pNext;
 			++iter;
-			EXPECT_EQ(next, &iter);
+			EXPECT_EQ(next, (&(*iter)));
 		}
 	}
 	//========== イテレータをリストの先頭に向かって一つ進めるテスト ==========
@@ -296,15 +297,16 @@ namespace iterator_auto_test
 			* 期待されている要素が格納されているかを確認
 			*/
 			DoubleLinkedList::Iterator iter = list.End();
+			--iter;//ダミーノードでなく、最後のノードから
 			while (1)
 			{
 				/**
 				* 前の要素へのポインタを先に取得、
 				* イテレータが先頭を向って一つ進めた後指した要素と比較する
 				*/
-				DoubleLinkedList::Node* prev = (&iter)->pPrev;
+				DoubleLinkedList::Node* prev = (&(*iter))->pPrev;
 				--iter;
-				EXPECT_EQ(prev, &iter);
+				EXPECT_EQ(prev, (&(*iter)));
 
 				//指した要素が先頭である場合、すべて確認完了
 				if (iter == list.Begin())
@@ -329,14 +331,14 @@ namespace iterator_auto_test
 			list.PushBack(&node2);
 
 			DoubleLinkedList::Iterator iter = list.End();
-
+			--iter;//ダミーノードでなく、最後のノードから
 			/**
 			* 前の要素へのポインタを先に取得、
 			* イテレータが先頭を向って一つ進めた後指した要素と比較する
 			*/
-			DoubleLinkedList::Node* prev = (&iter)->pPrev;
+			DoubleLinkedList::Node* prev = (&(*iter))->pPrev;
 			--iter;
-			EXPECT_EQ(prev, &iter);
+			EXPECT_EQ(prev, (&(*iter)));
 		}
 
 		/**
@@ -354,14 +356,14 @@ namespace iterator_auto_test
 			list.PushBack(&node2);
 
 			DoubleLinkedList::Iterator iter = list.End();
-
+			iter--;//ダミーノードでなく、最後のノードから
 			/**
 			* 前の要素へのポインタを先に取得、
 			* イテレータが先頭を向って一つ進めた後指した要素と比較する
 			*/
-			DoubleLinkedList::Node* prev = (&iter)->pPrev;
+			DoubleLinkedList::Node* prev = (&(*iter))->pPrev;
 			iter--;
-			EXPECT_EQ(prev, &iter);
+			EXPECT_EQ(prev, (&(*iter)));
 		}
 	}
 	//========== イテレータのコピーを行うテスト ==========

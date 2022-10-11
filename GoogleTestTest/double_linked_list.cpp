@@ -123,7 +123,8 @@ const DoubleLinkedList::Node& DoubleLinkedList::ConstIterator::operator*() const
 
 /**
 * @brief	指す要素へのポインタを取得する(const版)
-* @detail	(*Iterator)の場合、ダミーの方がassertを起こすため、ポインタを用意する。
+* @detail	(*ConstIterator)の場合、ダミーの方がassertを起こすため、
+*			ポインタを用意する。
 */
 const DoubleLinkedList::Node* DoubleLinkedList::ConstIterator::operator&() const
 {
@@ -204,10 +205,6 @@ bool DoubleLinkedList::PushBack(DoubleLinkedList::Node* newNode)
 	ConstIterator iter = CEnd();
 	return Insert(iter, newNode);
 }
-bool DoubleLinkedList::PushBack(int score, const char* name)
-{
-	return false;
-}
 
 
 /**
@@ -267,7 +264,7 @@ bool DoubleLinkedList::Insert(ConstIterator& positionIter, Node* newNode)
 		return false;
 
 	//挿入を行う
-	Node* prev = (&positionIter)->pPrev;//(*positionIter)の場合、ダミーの方がassertを起こす
+	Node* prev = (&positionIter)->pPrev;//positionはダミーを指すイテレータの可能性がある
 	Node* next = prev->pNext;
 
 	prev->pNext = newNode;

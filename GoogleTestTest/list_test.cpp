@@ -4,11 +4,11 @@
 /**双方向リストの単体テスト*/
 #define GT_TEST_DOUBLE_LINKED_LIST
 
-//=================================== 双方向リスト単体テストのテスト ===================================
+//========== 双方向リスト単体テストのテスト ==========
 namespace doubleLinkedList_test
 {
 #if defined GT_TEST_DOUBLE_LINKED_LIST
-	//=================================== データ数の取得のテスト ===================================
+	//========== データ数の取得のテスト ==========
 	namespace list_count_test
 	{
 		/**
@@ -167,7 +167,7 @@ namespace doubleLinkedList_test
 		//	list.Count();
 		//}
 	}
-	//=================================== データの挿入のテスト ===================================
+	//========== データの挿入のテスト ==========
 	namespace list_insert_test
 	{
 		/**
@@ -215,7 +215,8 @@ namespace doubleLinkedList_test
 
 			//元々先頭だった要素が２番目になってるかをチェック
 			DoubleLinkedList::Iterator iter = list.Begin();
-			EXPECT_TRUE((&(++iter)) == &headNode );
+			++iter;
+			EXPECT_EQ(&headNode, &(*iter));
 		}
 
 		/**
@@ -338,7 +339,7 @@ namespace doubleLinkedList_test
 		//	list.Insert(DoubleLinkedList::Iterator(), new DoubleLinkedList::Node);
 		//}
 	}
-	//=================================== データの削除のテスト ===================================
+	//========== データの削除のテスト ==========
 	namespace list_remove_test 
 	{
 		/**
@@ -478,7 +479,7 @@ namespace doubleLinkedList_test
 		//	list.Remove(DoubleLinkedList::Iterator());
 		//}
 	}
-	//=================================== 先頭イテレータの取得のテスト ===================================
+	//========== 先頭イテレータの取得のテスト ==========
 	namespace list_begin_test 
 	{
 		/**
@@ -490,7 +491,9 @@ namespace doubleLinkedList_test
 		TEST(ListBeginTest, WhenEmptyList)
 		{
 			DoubleLinkedList list;
-			EXPECT_TRUE((&list.Begin())->isDummy);
+
+			//ダミーノードの場合要素を取得する際にAssert発生
+			EXPECT_DEATH(*list.Begin(), "");
 		}
 
 		/**
@@ -506,7 +509,7 @@ namespace doubleLinkedList_test
 			list.PushBack(&node);
 
 			EXPECT_EQ(1, list.Count());//リストに要素が一つあるかをチェック
-			EXPECT_TRUE((&node) == (&list.Begin()));
+			EXPECT_TRUE((&node) == &(*list.Begin()));
 		}
 
 		/**
@@ -523,7 +526,7 @@ namespace doubleLinkedList_test
 			list.PushBack(&node2);
 
 			EXPECT_LE(2, list.Count());//リストに要素が二つ以上あるかをチェック
-			EXPECT_TRUE((&node1) == (&list.Begin()));
+			EXPECT_TRUE((&node1) == &(*list.Begin()));
 		}
 
 		/**
@@ -544,19 +547,19 @@ namespace doubleLinkedList_test
 			DoubleLinkedList::Iterator head = list.Begin();
 			DoubleLinkedList::Node headNode;
 			EXPECT_TRUE(list.Insert(head, &headNode));
-			EXPECT_TRUE((&headNode) == (&list.Begin()));
+			EXPECT_TRUE((&headNode) == &(*list.Begin()));
 
 			//中央に挿入
 			DoubleLinkedList::Iterator middle(&node2,&list);
 			DoubleLinkedList::Node newNode2;
 			EXPECT_TRUE(list.Insert(middle, &newNode2));
-			EXPECT_TRUE((&headNode) == (&list.Begin()));
+			EXPECT_TRUE((&headNode) == &(*list.Begin()));
 
 			//末尾に挿入
 			DoubleLinkedList::Iterator tail = list.End();
 			DoubleLinkedList::Node newNode3;
 			EXPECT_TRUE(list.Insert(tail, &newNode3));
-			EXPECT_TRUE((&headNode) == (&list.Begin()));
+			EXPECT_TRUE((&headNode) == &(*list.Begin()));
 		}
 
 		/**
@@ -579,17 +582,17 @@ namespace doubleLinkedList_test
 			DoubleLinkedList::Iterator last = list.End();//ダミーノード
 			--last;//末尾ノード
 			EXPECT_TRUE(list.Remove(last));
-			EXPECT_TRUE((&node1) == (&list.Begin()));
+			EXPECT_TRUE((&node1) == &(*list.Begin()));
 
 			//中央を削除
 			DoubleLinkedList::Iterator middle(&node3, &list);
 			EXPECT_TRUE(list.Remove(middle));
-			EXPECT_TRUE((&node1) == (&list.Begin()));
+			EXPECT_TRUE((&node1) == &(*list.Begin()));
 
 			//先頭を削除
 			DoubleLinkedList::Iterator head = list.Begin();
 			EXPECT_TRUE(list.Remove(head));
-			EXPECT_TRUE((&node2) == (&list.Begin()));
+			EXPECT_TRUE((&node2) == &(*list.Begin()));
 		}
 
 		/**
@@ -607,7 +610,7 @@ namespace doubleLinkedList_test
 		//	constList.Begin();
 		//}
 	}
-	//=================================== 先頭コンストイテレータの取得のテスト ===================================
+	//========== 先頭コンストイテレータの取得のテスト ==========
 	namespace list_constBegin_test
 	{
 		/**
@@ -619,7 +622,9 @@ namespace doubleLinkedList_test
 		TEST(ListCBeginTest, WhenEmptyList)
 		{
 			DoubleLinkedList list;
-			EXPECT_TRUE((&list.CBegin())->isDummy);
+			
+			//ダミーノードの場合要素を取得する際にAssert発生
+			EXPECT_DEATH(*list.CBegin(), "");
 		}
 
 		/**
@@ -635,7 +640,7 @@ namespace doubleLinkedList_test
 			list.PushBack(&node);
 
 			EXPECT_EQ(1, list.Count());//リストに要素が一つあるかをチェック
-			EXPECT_TRUE((&node) == (&list.CBegin()));
+			EXPECT_TRUE((&node) == &(*list.CBegin()));
 		}
 
 		/**
@@ -652,7 +657,7 @@ namespace doubleLinkedList_test
 			list.PushBack(&node2);
 
 			EXPECT_LE(2, list.Count());//リストに要素が二つ以上あるかをチェック
-			EXPECT_TRUE((&node1) == (&list.CBegin()));
+			EXPECT_TRUE((&node1) == &(*list.CBegin()));
 		}
 
 		/**
@@ -673,19 +678,19 @@ namespace doubleLinkedList_test
 			DoubleLinkedList::Iterator head = list.Begin();
 			DoubleLinkedList::Node headNode;
 			EXPECT_TRUE(list.Insert(head, &headNode));
-			EXPECT_TRUE((&headNode) == (&list.CBegin()));
+			EXPECT_TRUE((&headNode) == &(*list.CBegin()));
 
 			/**中央に挿入*/
 			DoubleLinkedList::Iterator middle(&node2, &list);
 			DoubleLinkedList::Node newNode2;
 			EXPECT_TRUE(list.Insert(middle, &newNode2));
-			EXPECT_TRUE((&headNode) == (&list.CBegin()));
+			EXPECT_TRUE((&headNode) == &(*list.CBegin()));
 
 			/**末尾に挿入*/
 			DoubleLinkedList::Iterator tail = list.End();
 			DoubleLinkedList::Node newNode3;
 			EXPECT_TRUE(list.Insert(tail, &newNode3));
-			EXPECT_TRUE((&headNode) == (&list.CBegin()));
+			EXPECT_TRUE((&headNode) == &(*list.CBegin()));
 		}
 
 		/**
@@ -708,17 +713,17 @@ namespace doubleLinkedList_test
 			DoubleLinkedList::Iterator last = list.End();/**ダミーノード*/
 			--last;/**末尾ノード*/
 			EXPECT_TRUE(list.Remove(last));
-			EXPECT_TRUE((&node1) == (&list.CBegin()));
+			EXPECT_TRUE((&node1) == &(*list.CBegin()));
 
 			/**中央を削除*/
 			DoubleLinkedList::Iterator middle(&node3, &list);
 			EXPECT_TRUE(list.Remove(middle));
-			EXPECT_TRUE((&node1) == (&list.CBegin()));
+			EXPECT_TRUE((&node1) == &(*list.CBegin()));
 
 			/**先頭を削除*/
 			DoubleLinkedList::Iterator head = list.Begin();
 			list.Remove(head);
-			EXPECT_TRUE((&node2) == (&list.CBegin()));
+			EXPECT_TRUE((&node2) == &(*list.CBegin()));
 
 		}
 
@@ -737,7 +742,7 @@ namespace doubleLinkedList_test
 		//	constList.CBegin();/**コンパイルエラーにならない*/
 		//}
 	}
-	//=================================== 末尾イテレータの取得のテスト ===================================
+	//========== 末尾イテレータの取得のテスト ==========
 	namespace list_end_test
 	{
 		/**
@@ -749,7 +754,9 @@ namespace doubleLinkedList_test
 		TEST(ListEndTest, WhenEmptyList)
 		{
 			DoubleLinkedList list;
-			EXPECT_TRUE((&list.End())->isDummy);
+
+			//ダミーノードの場合要素を取得する際にAssert発生
+			EXPECT_DEATH(*list.End(), "");
 		}
 
 		/**
@@ -765,7 +772,7 @@ namespace doubleLinkedList_test
 			list.PushBack(&node);
 
 			EXPECT_EQ(1, list.Count());//リストに要素が一つあるかをチェック
-			EXPECT_TRUE((&list.End())->isDummy);
+			EXPECT_DEATH(*list.End(), "");//ダミーノードの場合要素を取得する際にAssert発生
 		}
 
 		/**
@@ -782,7 +789,7 @@ namespace doubleLinkedList_test
 			list.PushBack(&node2);
 
 			EXPECT_LE(2, list.Count());//リストに要素が二つ以上あるかをチェック
-			EXPECT_TRUE((&list.End())->isDummy);
+			EXPECT_DEATH(*list.End(), "");//ダミーノードの場合要素を取得する際にAssert発生
 		}
 
 		/**
@@ -803,19 +810,19 @@ namespace doubleLinkedList_test
 			DoubleLinkedList::Iterator head = list.Begin();
 			DoubleLinkedList::Node newNode1;
 			EXPECT_TRUE(list.Insert(head, &newNode1));
-			EXPECT_TRUE((&list.End())->isDummy);
+			EXPECT_DEATH(*list.End(), "");//ダミーノードの場合要素を取得する際にAssert発生
 
 			/**中央に挿入*/
 			DoubleLinkedList::Iterator middle(&node2, &list);
 			DoubleLinkedList::Node newNode2;
 			EXPECT_TRUE(list.Insert(middle, &newNode2));
-			EXPECT_TRUE((&list.End())->isDummy);
+			EXPECT_DEATH(*list.End(), "");//ダミーノードの場合要素を取得する際にAssert発生
 
 			/**末尾に挿入*/
 			DoubleLinkedList::Iterator tail = list.End();
 			DoubleLinkedList::Node newNode3;
 			EXPECT_TRUE(list.Insert(tail, &newNode3));
-			EXPECT_TRUE((&list.End())->isDummy);
+			EXPECT_DEATH(*list.End(), "");//ダミーノードの場合要素を取得する際にAssert発生
 		}
 
 		/**
@@ -838,17 +845,17 @@ namespace doubleLinkedList_test
 			DoubleLinkedList::Iterator last = list.End();/**ダミーノード*/
 			--last;/**末尾ノード*/
 			EXPECT_TRUE(list.Remove(last));
-			EXPECT_TRUE((&list.End())->isDummy);
+			EXPECT_DEATH(*list.End(), "");//ダミーノードの場合要素を取得する際にAssert発生
 
 			/**中央を削除*/
 			DoubleLinkedList::Iterator middle(&node3, &list);
 			EXPECT_TRUE(list.Remove(middle));
-			EXPECT_TRUE((&list.End())->isDummy);
+			EXPECT_DEATH(*list.End(), "");//ダミーノードの場合要素を取得する際にAssert発生
 
 			/**先頭を削除*/
 			DoubleLinkedList::Iterator head = list.Begin();
 			EXPECT_TRUE(list.Remove(head));
-			EXPECT_TRUE((&list.End())->isDummy);
+			EXPECT_DEATH(*list.End(), "");//ダミーノードの場合要素を取得する際にAssert発生
 		}
 
 		/**
@@ -867,7 +874,7 @@ namespace doubleLinkedList_test
 		//	SUCCEED();
 		//}
 	}
-	//=================================== 末尾コンストイテレータの取得のテスト ===================================
+	//========== 末尾コンストイテレータの取得のテスト ==========
 	namespace list_constEnd_test
 	{
 		/**
@@ -879,7 +886,9 @@ namespace doubleLinkedList_test
 		TEST(ListCEndTest, WhenEmptyList)
 		{
 			DoubleLinkedList list;
-			EXPECT_TRUE((&list.CEnd())->isDummy);
+
+			//ダミーノードの場合要素を取得する際にAssert発生
+			EXPECT_DEATH(*list.CEnd(), "");
 		}
 
 		/**
@@ -895,7 +904,7 @@ namespace doubleLinkedList_test
 			list.PushBack(&node);
 
 			EXPECT_EQ(1, list.Count());//リストに要素が一つあるかをチェック
-			EXPECT_TRUE((&list.CEnd())->isDummy);
+			EXPECT_DEATH(*list.CEnd(), "");//ダミーノードの場合要素を取得する際にAssert発生
 		}
 
 		/**
@@ -912,7 +921,7 @@ namespace doubleLinkedList_test
 			list.PushBack(&node2);
 
 			EXPECT_LE(2, list.Count());//リストに要素が二つ以上あるかをチェック
-			EXPECT_TRUE((&list.CEnd())->isDummy);
+			EXPECT_DEATH(*list.CEnd(), "");//ダミーノードの場合要素を取得する際にAssert発生
 		}
 
 		/**
@@ -933,19 +942,19 @@ namespace doubleLinkedList_test
 			DoubleLinkedList::Iterator head = list.Begin();
 			DoubleLinkedList::Node newNode1;
 			EXPECT_TRUE(list.Insert(head, &newNode1));
-			EXPECT_TRUE((&list.CEnd())->isDummy);
+			EXPECT_DEATH(*list.CEnd(), "");//ダミーノードの場合要素を取得する際にAssert発生
 
 			/**中央に挿入*/
 			DoubleLinkedList::Iterator middle(&node2, &list);
 			DoubleLinkedList::Node newNode2;
 			EXPECT_TRUE(list.Insert(middle, &newNode2));
-			EXPECT_TRUE((&list.CEnd())->isDummy);
+			EXPECT_DEATH(*list.CEnd(), "");//ダミーノードの場合要素を取得する際にAssert発生
 
 			/**末尾に挿入*/
 			DoubleLinkedList::Iterator tail = list.End();
 			DoubleLinkedList::Node newNode3;
 			EXPECT_TRUE(list.Insert(tail, &newNode3));
-			EXPECT_TRUE((&list.CEnd())->isDummy);
+			EXPECT_DEATH(*list.CEnd(), "");//ダミーノードの場合要素を取得する際にAssert発生
 		}
 
 		/**
@@ -968,17 +977,17 @@ namespace doubleLinkedList_test
 			DoubleLinkedList::Iterator last = list.End();/**ダミーノード*/
 			--last;/**末尾ノード*/
 			EXPECT_TRUE(list.Remove(last));
-			EXPECT_TRUE((&list.CEnd())->isDummy);
+			EXPECT_DEATH(*list.CEnd(), "");//ダミーノードの場合要素を取得する際にAssert発生
 
 			/**中央を削除*/
 			DoubleLinkedList::Iterator middle(&node3, &list);
 			EXPECT_TRUE(list.Remove(middle));
-			EXPECT_TRUE((&list.CEnd())->isDummy);
+			EXPECT_DEATH(*list.CEnd(), "");//ダミーノードの場合要素を取得する際にAssert発生
 
 			/**先頭を削除*/
 			DoubleLinkedList::Iterator head = list.Begin();
 			list.Remove(head);
-			EXPECT_TRUE((&list.CEnd())->isDummy);
+			EXPECT_DEATH(*list.CEnd(), "");//ダミーノードの場合要素を取得する際にAssert発生
 
 		}
 

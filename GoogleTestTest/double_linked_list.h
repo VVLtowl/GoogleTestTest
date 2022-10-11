@@ -26,7 +26,7 @@ public:
 	
 	protected:
 		bool IsVaild(const DoubleLinkedList* const list);			//有効なイテレータであるか
-
+		const Node* operator&()const;								//指す要素へのポインタを取得する(const版)
 	public:
 		ConstIterator() :
 			ConstIterator(nullptr, nullptr) {};
@@ -38,7 +38,7 @@ public:
 		ConstIterator operator--(int i);							//リストの先頭に向かって一つ進める
 		ConstIterator operator++(int i);							//リストの末尾に向かって一つ進める
 		const Node& operator*()const;								//イテレータの指す要素を取得する(const版)
-		const Node* operator&()const;								//指す要素へのポインタを取得する(const版)
+		
 		ConstIterator(const ConstIterator& constIter);				//コピーを行う（コピーコンストラクタ）
 		ConstIterator& operator=(const ConstIterator& constIter);	//代入を行う
 		bool operator==(const ConstIterator& constIter);			//同一か比較する
@@ -51,6 +51,8 @@ public:
 	//========== イテレータ ==========
 	class Iterator :public ConstIterator
 	{
+	private:
+		Node* operator&();										//指す要素へのポインタを取得する(非const版)
 	public:
 		Iterator() :
 			Iterator(nullptr, nullptr) {};
@@ -58,7 +60,7 @@ public:
 			ConstIterator(node, list) {};						//コンストラクタで参照を設定
 
 		Node& operator*();										//イテレータのさす要素を取得する(非const版)
-		Node* operator&();										//指す要素へのポインタを取得する(非const版)
+		//Node* operator&();									
 	};
 
 private:
@@ -76,7 +78,6 @@ public:
 
 	int Count()const;									//データ数を取得する
 	bool PushBack(Node* newNode);						//データを末尾後に追加
-	bool PushBack(int score,const char* name);			//データを末尾後に追加
 	bool Insert(ConstIterator& position, Node* newNode);//データの挿入
 	bool Remove(ConstIterator& position);				//データの削除
 	Iterator Begin();									//先頭イテレータ取得する
